@@ -1,0 +1,123 @@
+#include <stdio.h>
+
+int main()
+{
+    int n, i, time = 0, completed = 0;
+    int at[20], bt[20], pr[20], rem_bt[20];
+    int wt[20], tat[20], finish[20];
+    int highest;
+    float avgWT = 0, avgTAT = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    printf("Enter Arrival Time, Burst Time and Priority:\n");
+
+    for(i = 0; i < n; i++)
+    {
+        printf("\nP%d Arrival Time: ", i + 1);
+        scanf("%d", &at[i]);
+
+        printf("P%d Burst Time: ", i + 1);
+        scanf("%d", &bt[i]);
+
+        printf("P%d Priority: ", i + 1);
+        scanf("%d", &pr[i]);
+
+        rem_bt[i] = bt[i];
+        finish[i] = 0;
+    }
+
+    while(completed != n)
+    {
+        highest = -1;
+
+        // Find highest priority process available
+        for(i = 0; i < n; i++)
+        {
+            if(at[i] <= time && rem_bt[i] > 0)
+            {
+                if(highest == -1 || pr[i] < pr[highest])
+                {
+                    highest = i;
+                }
+            }
+        }
+
+        if(highest == -1)
+        {
+            time++;
+        }
+        else
+        {
+            rem_bt[highest]--;
+            time++;
+
+            // Process completed
+            if(rem_bt[highest] == 0)
+            {
+                completed++;
+                finish[highest] = time;
+
+                tat[highest] = finish[highest] - at[highest];
+                wt[highest] = tat[highest] - bt[highest];
+            }
+        }
+    }
+
+    // Calculate averages
+    for(i = 0; i < n; i++)
+    {
+        avgWT += wt[i];
+        avgTAT += tat[i];
+    }
+
+    avgWT /= n;
+    avgTAT /= n;
+
+    printf("\nProcess\tAT\tBT\tPriority\tWT\tTAT\n");
+
+    for(i = 0; i < n; i++)
+    {
+        printf("P%d\t%d\t%d\t%d\t\t%d\t%d\n",
+               i + 1, at[i], bt[i], pr[i], wt[i], tat[i]);
+    }
+
+    printf("\nAverage Waiting Time = %.2f", avgWT);
+    printf("\nAverage Turnaround Time = %.2f\n", avgTAT);
+
+    return 0;
+}
+
+
+
+
+OUTPUT:
+
+Enter number of processes: 4
+Enter Arrival Time, Burst Time and Priority:
+
+P1 Arrival Time: 0
+P1 Burst Time: 17
+P1 Priority: 3
+
+P2 Arrival Time: 2
+P2 Burst Time: 4
+P2 Priority: 1
+
+P3 Arrival Time: 5
+P3 Burst Time: 6
+P3 Priority: 2
+
+P4 Arrival Time: 3
+P4 Burst Time: 12
+P4 Priority: 4
+
+Process    	AT       	BT    	Priority      	WT    	TAT
+P1        	0         17         3	        	10       27
+P2      	  2        	4          1	     	     0      	4
+P3      	  5         6   	     2	     	     1       	7
+P4      	  3       	12         4	     	    24       36
+
+Average Waiting Time = 8.75
+Average Turnaround Time = 18.50
