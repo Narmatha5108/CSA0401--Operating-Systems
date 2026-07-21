@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <pthread.h>
+
+// Thread 1 Function
+void *thread1(void *arg)
+{
+    printf("Thread 1: Printing message...\n");
+    printf("Hello from Thread 1!\n");
+    return NULL;
+}
+
+// Thread 2 Function
+void *thread2(void *arg)
+{
+    printf("Thread 2: Printing message...\n");
+    printf("Hello from Thread 2!\n");
+    return NULL;
+}
+
+int main()
+{
+    pthread_t t1, t2;
+
+    printf("Main Thread: Creating Thread 1 and Thread 2...\n");
+
+    pthread_create(&t1, NULL, thread1, NULL);
+    pthread_create(&t2, NULL, thread2, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Main Thread: Both threads have completed execution.\n");
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Main Thread: Creating Thread 1 and Thread 2...
+Thread 1: Printing message...
+Hello from Thread 1!
+Thread 2: Printing message...
+Hello from Thread 2!
+Main Thread: Both threads have completed execution.
