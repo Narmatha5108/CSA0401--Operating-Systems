@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <pthread.h>
+
+int counter = 0;
+pthread_mutex_t mutex;
+
+void *threadFunction(void *arg)
+{
+    int i;
+    int id = *(int *)arg;
+
+    printf("Thread %d Started.\n", id);
+
+    for(i = 0; i < 1000000; i++)
+    {
+        pthread_mutex_lock(&mutex);
+        counter++;
+        pthread_mutex_unlock(&mutex);
+    }
+
+    printf("Thread %d Finished.\n", id);
+
+    return NULL;
+}
+
+int main()
+{
+    pthread_t thread1, thread2;
+    int id1 = 1, id2 = 2;
+
+    printf("***** PROCESS SYNCHRONIZATION USING MUTEX LOCK *****\n\n");
+
+    pthread_mutex_init(&mutex, NULL);
+    printf("Mutex Lock Initialized.\n\n");
+
+    pthread_create(&thread1, NULL, threadFunction, &id1);
+    pthread_create(&thread2, NULL, threadFunction, &id2);
+
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+
+    pthread_mutex_destroy(&mutex);
+
+    printf("\nMutex Destroyed.\n\n");
+    printf("Final Counter Value: %d\n", counter);
+
+    return 0;
+}
+
+OUTPUT:
+
+***** PROCESS SYNCHRONIZATION USING MUTEX LOCK *****
+
+Mutex Lock Initialized.
+
+Thread 1 Started.
+Thread 2 Started.
+Thread 2 Finished.
+Thread 1 Finished.
+
+Mutex Destroyed.
+
+Final Counter Value: 2000000
