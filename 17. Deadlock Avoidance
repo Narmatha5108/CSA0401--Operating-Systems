@@ -1,0 +1,172 @@
+#include <stdio.h>
+
+int main() {
+    int n, m, i, j;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    printf("Enter number of resource types: ");
+    scanf("%d", &m);
+
+    int alloc[n][m], max[n][m], need[n][m];
+    int avail[m];
+
+    printf("\nEnter Allocation Matrix:\n");
+    for(i=0;i<n;i++)
+        for(j=0;j<m;j++)
+            scanf("%d",&alloc[i][j]);
+
+    printf("\nEnter Maximum Matrix:\n");
+    for(i=0;i<n;i++)
+        for(j=0;j<m;j++)
+            scanf("%d",&max[i][j]);
+
+    printf("\nEnter Available Resources:\n");
+    for(i=0;i<m;i++)
+        scanf("%d",&avail[i]);
+
+    // Need Matrix
+    for(i=0;i<n;i++)
+        for(j=0;j<m;j++)
+            need[i][j]=max[i][j]-alloc[i][j];
+
+    // Resource Request
+    int p;
+    printf("\nEnter Process Number making request: ");
+    scanf("%d",&p);
+
+    int request[m];
+    printf("Enter Request Vector:\n");
+    for(i=0;i<m;i++)
+        scanf("%d",&request[i]);
+
+    // Check Request <= Need
+    for(i=0;i<m;i++){
+        if(request[i]>need[p][i]){
+            printf("\nError! Process has exceeded its maximum claim.\n");
+            return 0;
+        }
+    }
+
+    // Check Request <= Available
+    for(i=0;i<m;i++){
+        if(request[i]>avail[i]){
+            printf("\nResources are not available. Process must wait.\n");
+            return 0;
+        }
+    }
+
+    // Pretend Allocation
+    for(i=0;i<m;i++){
+        avail[i]-=request[i];
+        alloc[p][i]+=request[i];
+        need[p][i]-=request[i];
+    }
+
+    // Safety Algorithm
+    int finish[n], work[m], safeSeq[n];
+
+    for(i=0;i<m;i++)
+        work[i]=avail[i];
+
+    for(i=0;i<n;i++)
+        finish[i]=0;
+
+    int count=0;
+
+    while(count<n){
+        int found=0;
+
+        for(i=0;i<n;i++){
+            if(finish[i]==0){
+
+                int flag=1;
+
+                for(j=0;j<m;j++){
+                    if(need[i][j]>work[j]){
+                        flag=0;
+                        break;
+                    }
+                }
+
+                if(flag){
+                    for(j=0;j<m;j++)
+                        work[j]+=alloc[i][j];
+
+                    safeSeq[count++]=i;
+                    finish[i]=1;
+                    found=1;
+                }
+            }
+        }
+
+        if(found==0){
+            printf("\nRequest cannot be granted. Deadlock avoided.\n");
+            return 0;
+        }
+    }
+
+    printf("\nRequest granted successfully.\n");
+    printf("System is in SAFE state.\n");
+    printf("Safe Sequence: ");
+
+    for(i=0;i<n;i++)
+        printf("P%d ",safeSeq[i]);
+
+    printf("\n");
+
+    return 0;
+}
+
+OUTPUT:
+
+Case(i) While accept the request
+
+Enter number of processes: 3
+Enter number of resource types: 2
+
+Enter Allocation Matrix:
+1 1
+1 0
+1 1
+
+Enter Maximum Matrix:
+2 2
+2 1
+2 2
+
+Enter Available Resources:
+1 2
+
+Enter Process Number making request: 1
+Enter Request Vector:
+1 0
+
+Request granted successfully.
+System is in SAFE state.
+Safe Sequence: P1 P2 P0 
+
+Case(ii) While reject the request
+
+Enter number of processes: 3
+Enter number of resource types: 2
+
+Enter Allocation Matrix:
+1 0
+1 1
+1 1
+
+Enter Maximum Matrix:
+3 2
+2 2
+2 2
+
+Enter Available Resources:
+1 0
+
+Enter Process Number making request: 0
+Enter Request Vector:
+1 0
+
+Request cannot be granted. Deadlock avoided.
