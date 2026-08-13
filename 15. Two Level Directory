@@ -1,0 +1,214 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_USERS 10
+#define MAX_FILES 10
+struct User
+{
+    char username[20];
+    char files[MAX_FILES][30];
+    int fileCount;
+};
+int main()
+{
+    struct User users[MAX_USERS];
+    int userCount = 0;
+    int choice, i, j;
+    char username[20], filename[30];
+    while (1)
+    {
+        printf("\n--- TWO LEVEL DIRECTORY ---\n");
+        printf("1. Create User\n");
+        printf("2. Create File\n");
+        printf("3. Delete File\n");
+        printf("4. Search File\n");
+        printf("5. Display Directory\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice)
+        {
+            case 1:
+                if (userCount >= MAX_USERS)
+                {
+                    printf("Maximum users reached!\n");
+                    break;
+                }
+                printf("Enter username: ");
+                scanf("%s", username);
+                strcpy(users[userCount].username, username);
+                users[userCount].fileCount = 0;
+                userCount++;
+                printf("User directory created successfully.\n");
+                break;
+            case 2:
+                printf("Enter username: ");
+                scanf("%s", username);
+                for (i = 0; i < userCount; i++)
+                {
+                    if (strcmp(users[i].username, username) == 0)
+                    {
+                        if (users[i].fileCount >= MAX_FILES)
+                        {
+                            printf("Directory is full!\n");
+                            break;
+                        }
+                        printf("Enter file name: ");
+                        scanf("%s", filename);
+                        strcpy(users[i].files[users[i].fileCount],
+                               filename);
+                        users[i].fileCount++;
+                        printf("File created successfully.\n");
+                        break;
+                    }
+                }
+                if (i == userCount)
+                    printf("User not found.\n");
+                break;
+            case 3:
+                printf("Enter username: ");
+                scanf("%s", username);
+                for (i = 0; i < userCount; i++)
+                {
+                    if (strcmp(users[i].username, username) == 0)
+                    {
+                        printf("Enter file name to delete: ");
+                        scanf("%s", filename);
+                        for (j = 0; j < users[i].fileCount; j++)
+                        {
+                            if (strcmp(users[i].files[j], filename) == 0)
+                            {
+                                for (int k = j;
+                                     k < users[i].fileCount - 1; k++)
+                                {
+                                    strcpy(users[i].files[k],
+                                           users[i].files[k + 1]);
+                                }
+                                users[i].fileCount--;
+                                printf("File deleted successfully.\n");
+                                break;
+                            }
+                        }
+                        if (j == users[i].fileCount)
+                            printf("File not found.\n");
+
+                        break;
+                    }
+                }
+                if (i == userCount)
+                    printf("User not found.\n");
+                break;
+            case 4:
+                printf("Enter username: ");
+                scanf("%s", username);
+                for (i = 0; i < userCount; i++)
+                {
+                    if (strcmp(users[i].username, username) == 0)
+                    {
+                        printf("Enter file name to search: ");
+                        scanf("%s", filename);
+                        for (j = 0; j < users[i].fileCount; j++)
+                        {
+                            if (strcmp(users[i].files[j], filename) == 0)
+                            {
+                                printf("File found.\n");
+                                break;
+                            }
+                        }
+                        if (j == users[i].fileCount)
+                            printf("File not found.\n");
+                        break;
+                    }
+                }
+                if (i == userCount)
+                    printf("User not found.\n");
+                break;
+            case 5:
+                printf("\n--- DIRECTORY STRUCTURE ---\n");
+                for (i = 0; i < userCount; i++)
+                {
+                    printf("\nUser: %s\n", users[i].username);
+                    if (users[i].fileCount == 0)
+                        printf("  No files\n");
+                    else
+                    {
+                        for (j = 0; j < users[i].fileCount; j++)
+                            printf("  %s\n", users[i].files[j]);
+                    }
+                }
+                break;
+            case 6:
+                printf("Exiting...\n");
+                return 0;
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
+
+
+
+OUTPUT:
+
+
+--- TWO LEVEL DIRECTORY ---
+1. Create User
+2. Create File
+3. Delete File
+4. Search File
+5. Display Directory
+6. Exit
+Enter your choice: 1
+Enter username: user1
+User directory created successfully.
+
+--- TWO LEVEL DIRECTORY ---
+1. Create User
+2. Create File
+3. Delete File
+4. Search File
+5. Display Directory
+6. Exit
+Enter your choice: 1
+Enter username: user2
+User directory created successfully.
+
+--- TWO LEVEL DIRECTORY ---
+1. Create User
+2. Create File
+3. Delete File
+4. Search File
+5. Display Directory
+6. Exit
+Enter your choice: 2
+Enter username: user1
+Enter file name: file1
+File created successfully.
+
+--- TWO LEVEL DIRECTORY ---
+1. Create User
+2. Create File
+3. Delete File
+4. Search File
+5. Display Directory
+6. Exit
+Enter your choice: user2
+Enter username: Enter file name: file3
+File created successfully.
+
+--- TWO LEVEL DIRECTORY ---
+1. Create User
+2. Create File
+3. Delete File
+4. Search File
+5. Display Directory
+6. Exit
+Enter your choice: 5
+
+--- DIRECTORY STRUCTURE ---
+
+User: user1
+  file1
+
+User: user2
+  file3
