@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+int main()
+{
+    int fd;
+    char buffer[100];
+    char data[] = "UNIX system calls are used for file management.";
+    /* Create and open a file */
+    fd = open("sample.txt", O_CREAT | O_RDWR, 0644);
+    if (fd == -1)
+    {
+        perror("File opening failed");
+        return 1;
+    }
+    printf("File opened successfully.\n");
+    /* Write data into file */
+    write(fd, data, strlen(data));
+    printf("Data written successfully.\n");
+    /* Move file pointer to beginning */
+    lseek(fd, 0, SEEK_SET);
+    /* Read data from file */
+    int n = read(fd, buffer, sizeof(buffer) - 1);
+    if (n > 0)
+    {
+        buffer[n] = '\0';
+        printf("Data read from file: %s\n", buffer);
+    }
+    /* Close the file */
+    close(fd);
+    printf("File closed successfully.\n");
+    return 0;
+}
+
+
+OUTPUT:
+
+File opened successfully.
+Data written successfully.
+Data read from file: UNIX system calls are used for file management.
+File closed successfully.
