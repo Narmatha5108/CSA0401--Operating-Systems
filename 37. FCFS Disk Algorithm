@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int n, i;
+    int request[100];
+    int head;
+    int total_movement = 0;
+
+    printf("Enter the number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter the disk request queue:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &request[i]);
+    }
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("\nDisk Scheduling Order:\n");
+    printf("%d", head);
+
+    for (i = 0; i < n; i++)
+    {
+        total_movement += abs(request[i] - head);
+        head = request[i];
+
+        printf(" -> %d", request[i]);
+    }
+
+    printf("\n\nTotal Head Movement = %d cylinders\n", total_movement);
+
+    printf("Average Head Movement = %.2f cylinders\n",
+           (float)total_movement / n);
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Enter the number of disk requests: 9
+Enter the disk request queue:
+86 147 91 177 44 269 130 20 210
+Enter the initial head position: 125
+
+Disk Scheduling Order:
+125 -> 86 -> 147 -> 91 -> 177 -> 44 -> 269 -> 130 -> 20 -> 210
+
+Total Head Movement = 1039 cylinders
+Average Head Movement = 115.44 cylinders
