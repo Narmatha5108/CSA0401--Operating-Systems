@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
+int main()
+{
+    int fd;
+    char buffer[100];
+    struct stat fileStat;
+    DIR *dir;
+    struct dirent *entry;
+
+    /* 1. fcntl() */
+    fd = open("sample.txt", O_RDWR | O_CREAT, 0644);
+
+    if (fd == -1)
+    {
+        perror("open");
+        return 1;
+    }
+
+    printf("File opened successfully.\n");
+
+    printf("File descriptor: %d\n", fd);
+
+    /* Get file descriptor flags using fcntl */
+    int flags = fcntl(fd, F_GETFL);
+
+    if (flags != -1)
+        printf("fcntl(): File flags obtained successfully.\n");
+
+    /* Write data */
+    write(fd, "Hello UNIX I/O\n", 15);
+
+    /* 2. lseek() */
+    lseek(fd, 0, SEEK_SET);
+
+    read(fd, buffer, 15);
+    buffer[15] = '\0';
+
+    printf("lseek(): File content = %s", buffer);
+
+    /* 3. stat() */
+    if (stat("sample.txt", &fileStat) == 0)
+    {
+        printf("\nstat(): File information\n");
+        printf("File size: %ld bytes\n", fileStat.st_size);
+        printf("File inode: %ld\n", fileStat.st_ino);
+        printf("Number of links: %ld\n", fileStat.st_nlink);
+    }
+    else
+    {
+        perror("stat");
+    }
+
+    close(fd);
+
+    /* 4. opendir() */
+    dir = opendir(".");
+
+    if (dir == NULL)
+    {
+        perror("opendir");
+        return 1;
+    }
+
+    printf("\nopendir(): Current directory opened.\n");
+
+    /* 5. readdir() */
+    printf("readdir(): Files and directories:\n");
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        printf("%s\n", entry->d_name);
+    }
+
+    closedir(dir);
+
+    return 0;
+}
+
+
+
+OUTPUT:
+
+File opened successfully.
+File descriptor: 3
+fcntl(): File flags obtained successfully.
+lseek(): File content = Hello UNIX I/O
+
+stat(): File information
+File size: 1684 bytes
+File inode: 199
+Number of links: 1
+
+opendir(): Current directory opened.
+readdir(): Files and directories:
+.
+..
+a.out
+sample.txt
+main.c
