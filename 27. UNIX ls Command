@@ -1,0 +1,54 @@
+Hello UNIX I/O
+.h>
+#include <stdlib.h>
+#include <dirent.h>
+
+int main()
+{
+    DIR *dir;
+    struct dirent *entry;
+
+    /* Open current directory */
+    dir = opendir(".");
+
+    if (dir == NULL)
+    {
+        perror("Unable to open directory");
+        return 1;
+    }
+
+    printf("Contents of current directory:\n\n");
+
+    /* Read directory contents */
+    while ((entry = readdir(dir)) != NULL)
+    {
+        printf("%s\n", entry->d_name);
+    }
+
+    /* Close directory */
+    closedir(dir);
+
+    return 0;
+}
+
+
+
+OUTPUT:
+
+File opened successfully.
+File descriptor: 3
+fcntl(): File flags obtained successfully.
+lseek(): File content = Hello UNIX I/O
+
+stat(): File information
+File size: 539 bytes
+File inode: 138
+Number of links: 1
+
+opendir(): Current directory opened.
+readdir(): Files and directories:
+.
+..
+a.out
+sample.txt
+main.c
