@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+int main()
+{
+    int block[100], next[100];
+    int n, i, current;
+
+    printf("Enter the number of blocks in the file: ");
+    scanf("%d", &n);
+
+    printf("\nEnter the block numbers:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        printf("Block %d: ", i + 1);
+        scanf("%d", &block[i]);
+    }
+
+    /* Create links */
+    for (i = 0; i < n - 1; i++)
+    {
+        next[i] = i + 1;
+    }
+
+    next[n - 1] = -1;
+
+    printf("\nLinked File Allocation:\n");
+
+    printf("First Block = %d\n", block[0]);
+    printf("Last Block  = %d\n", block[n - 1]);
+
+    printf("\nBlock Chain:\n");
+
+    current = 0;
+
+    while (current != -1)
+    {
+        printf("%d", block[current]);
+
+        if (next[current] != -1)
+            printf(" -> ");
+
+        current = next[current];
+    }
+
+    printf(" -> NULL\n");
+
+    printf("\nBlock and Next Pointer:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        if (next[i] == -1)
+            printf("Block %d -> NULL\n", block[i]);
+        else
+            printf("Block %d -> Block %d\n",
+                   block[i], block[next[i]]);
+    }
+
+    return 0;
+}
+
+
+
+OUTPUT:
+
+
+Enter the number of blocks in the file: 5
+
+Enter the block numbers:
+Block 1: 10
+Block 2: 25
+Block 3: 40
+Block 4: 15
+Block 5: 60
+
+Linked File Allocation:
+First Block = 10
+Last Block  = 60
+
+Block Chain:
+10 -> 25 -> 40 -> 15 -> 60 -> NULL
+
+Block and Next Pointer:
+Block 10 -> Block 25
+Block 25 -> Block 40
+Block 40 -> Block 15
+Block 15 -> Block 60
+Block 60 -> NULL
